@@ -15,7 +15,7 @@ Underlying this effort are:
 
 
 ## A bit about me
-I've been working in IT for all my professional life and for some time before that as a student.
+I've been working in IT for all my professional life and for some time before that as a student - my first coding job was at age 14.
 
 Since the early 1980's, I have been employed as:
 - Support engineer / Escalations Manager
