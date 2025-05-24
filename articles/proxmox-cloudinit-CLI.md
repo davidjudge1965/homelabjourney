@@ -1,4 +1,4 @@
-![Alt](/articles/assets/proxmox-server-solutions-gmbh-logo-vector.png =200x100) ![Alt](/articles/assets/cloud-init-logo-vector.png =200x100)
+![Alt](/articles/assets/proxmox-server-solutions-gmbh-logo-vector.png) ![Alt](/articles/assets/cloud-init-logo-vector.png)
 
 # Proxmox VM creation with CloudImage and CloudInit
 
