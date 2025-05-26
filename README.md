@@ -1,5 +1,5 @@
 # Home Lab Journey
-This repo holds my notes, instructions and thoughts around my journey into home labbing.
+This repo holds my notes, instructions and explanations or thoughts around my journey into home labbing.
 
 I've been homelabbing for many years now, but as I embark on new explorations I wanted to document the journey.
 
@@ -27,9 +27,16 @@ If you want to find out more about my career, check out [my linkedin page](https
 
 
 ## Setting up the homelab
-Key steps/processes in setting-up my homelab
+Key steps/processes in setting-up my homelab, though these may not be accomplished in the order below:
+- Install hardware and operating systems (not documented)
+- Build the basics of VM creatoin through the CLI, ready for a future automation or orchestration
+- Set up Kubernetes (not documented - there's already enough on the internet explaining this)
+- Set up monitoring of k3s, proxmox, etc. anlong with some dashboarding
+- Set up a front page to make access to the various applications easy
+- etc.
 
-
+In the next section you will find links to the various articles I have written.
+You will probably find the articles quite wordy.  One of my frustrations with many of the articles, blogs amd videos about how to do stuff tell you the step, but mostly don't really try to give a rationale.  I have tried to give the context and rationale or explanation for most of the steps I have taken and documented.
 
 ## Blogs/Articles
 
