@@ -27,9 +27,9 @@ If you want to find out more about my career, check out [my linkedin page](https
 
 
 ## Setting up the homelab
-Key steps/processes in setting-up my homelab, though these may not be accomplished in the order below:
+Key steps/processes in setting-up my homelab, though these may not be accomplished in the order below, are:
 - Install hardware and operating systems (not documented)
-- Build the basics of VM creatoin through the CLI, ready for a future automation or orchestration
+- Build the basics of VM creation through the CLI, ready for a future automation or orchestration
 - Set up Kubernetes (not documented - there's already enough on the internet explaining this)
 - Set up monitoring of k3s, proxmox, etc. anlong with some dashboarding
 - Set up a front page to make access to the various applications easy
