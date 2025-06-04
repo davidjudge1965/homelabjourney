@@ -208,23 +208,22 @@ EOF
 
 Note that the MAC address will be replaced when the VM template is cloned, as MAC addresses need to be unique.
 
-You can verify the full reference/path of the configuration files (what the pve documentation calls "<volume>") you just created with the command `pve list snip` where "snip" is the name of the storage:
+You can verify the full reference of the configuration files (what the pve documentation calls "<volume>") you just created with the command `pve list snip` where "snip" is the name of the storage:
 ```
 root@pve:/# pvesm list snip
 Volid                           Format  Type      Size VMID
 snip:snippets/network-data.yaml snippet snippets  340
 snip:snippets/user-data.yaml    snippet snippets  639
 ```
-The snippets must be in the root of your snippets volume - You cannot reference snippets in subdirectories.
 
 The next command will configure cloudinit for our template with the 2 sections we created above.  The command I will reference the snippets using the "snippets" storage reference `snip:` (as displayed by the `pvesm list` command).
 
 ```bash
 qm set 8200  --cicustom "user=snip:snippets/user-data.yaml,network=snip:snippets/network-data.yaml"
 ```
-The qm set --cicustom command changes, in effect, the whole of the cloudinit configuration.  You can't run it first for 'user' and then for 'network' as running it for 'network' will clear the 'user' configuration.  The snippets are read/used when the VM is created.
+The qm set --cicustom command changes, in effect, the whole of the cloudinit configuration.  You can't run it first for user and then for network as running it for network will clear the user configuration.  
 
-You can also use this command on a cloudinit _VM_ (as opposed to a template) - i.e. once you've cloned the template.  The changes will take effect next time you start the VM.
+You can also use this command on a cloudinit _VM_ (as opposed to a template) - i.e. once you've cloned the template.
 
 While it is not possible today to view the cloudinit settings you have set in the GUI, you can check the VM/template's config file.  For the 8200 template, look at the content of `/etc/pve/qemu-server/8200.conf`.  You will see the following line:
 ```
@@ -237,6 +236,91 @@ Here we clone the template to a new VM with ID 210 (which must be an available I
 
 ```bash
 qm clone 8200 210 --full true --storage data4tb
+```
+
+## All the commands - This section will probably be removed in time.
+
+```bash
+cd /var/lib/vz/template/iso
+wget https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+
+qm create 8200 --memory 4096 --core 4 --name ubuntu-cloud --net0 virtio,bridge=vmbr0
+qm disk import 8200 noble-server-cloudimg-amd64.img data4tb
+qm set 8200 --scsihw virtio-scsi-pci --scsi0 data4tb:vm-8200-disk-0
+qm set 8200 --boot order=scsi0
+qm resize 8200 scsi0 +50G
+qm set 8200 --agent enabled=1
+
+qm set 8200 --ide2 data4tb:cloudinit
+
+qm set 8200 --serial0 socket --vga serial0
+qm template 8200
+
+# Create a file with all the public ssh keys
+cat >>~/.ssh/all.pub <<EOF
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKL1EWv5ZwWTti7qoZbA+OZDGE5U+JhUU1Mxb+M0ZxkL ansibleuser@ansible4
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAP9eyxA4P8mE51qmbnigiuEmX72dRFRuN4SLmp0ISuA david@Ryzen2
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDfi8tdojFUWJJBvVSsvm6sp0bPiYCT9zeE7vXxeVXejw8IK29/qbUtKNx/DTbQUcLtoO42coAdNqc+oTt04ueO3o6GnYI/ZM+2NYCsGnFLtbVYOcaSextqXyLp/sr4o2nyV9vjF24F33TrnITxz1Jh+HqLwvh0ryII6XIv/pxo4XbFuQeeGUwuogCTmK+h4fDyXqE3AEd51bhjfv5gooB67XP6y/UxZxGiBoFX41Rb5pRf263ed1dUoW3KQkQWqcw2LI7SwzHO3+mbIgD4ZzsqrMGnxsoFLcox54gL++yYshMQDsughSssyBkcV0I1Txo9U3xsV81Ez91uxd1Qz67+bBk9IeAcaqIjPSR+Hc4a07mTiJ/w2NPTIHRzDIL5vCNvVJVYT62xdUBIxzQv4QeStLApLb7YmaLOXDEnFYNXmqw1Kmwph2e+9ufe6rpuXF5ybbGHhi44kzOM9M51W5Y+1bT4nb66AXJtk2Um1Xu1QKowBjcDarBVdjglKc79w75jAZ831/ApWfzMssQisV1Im+D0AAjVs695rDHbU9imJBu7p22G8Vw2ml9HmOQt//e+BfVobLR51uRdp2s3/2QbrZ4NbEG9l/qpPF9J1To2LrDkYjf+QYCG04G3FzsO9Z93WaxCqnuIR1sUfggpnoCsiswQl5zE01OTmMQlsjVmhw== root@pve
+EOF
+
+qm set 310 --ipconfig0 ip=192.168.178.220/24,gw=192.168.178.1
+qm set 310 --sshkeys ~/.ssh/all.pub 
+qm set 310 --ciuser ansibleuser
+qm set 310 --cipassword ansibleuser
+
+
+cat >> /snipfiles/snippets/user-data.yaml <<EOF
+#cloud-config
+hostname: ubuntu-cloud
+manage_etc_hosts: true
+fqdn: ubuntu-cloud.lab.davidmjudge.me.uk
+user: ansibleuser
+ssh_authorized_keys:
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKL1EWv5ZwWTti7qoZbA+OZDGE5U+JhUU1Mxb+M0ZxkL ansibleuser@ansible4
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAP9eyxA4P8mE51qmbnigiuEmX72dRFRuN4SLmp0ISuA david@Ryzen2
+chpasswd:
+  expire: False
+users:
+  - default
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+  - qemu-guest-agent
+runcmd:
+  - systemctl start qemu-guest-agent
+  - systemctl enable qemu-guest-agent
+  - echo "qemu-guest-agent enabled and started." >> ~root/cloutinit-finished.txt
+EOF
+
+
+
+cat >> /snipfiles/snippets/network-data.yaml <<EOF
+version: 1
+config:
+    - type: physical
+      name: eth0
+      mac_address: 'bc:24:11:39:d8:2a'
+      subnets:
+      - type: static
+        address: '192.168.178.210'
+        netmask: '255.255.255.0'
+        gateway: '192.168.178.1'
+    - type: nameserver
+      address:
+      - '192.168.178.1'
+      search:
+      - 'lab.davidmjudge.me.uk
+EOF
+
+
+qm set 8200 --cicustom network=snip:snippets/network-data.yaml
+qm set 8200 --cicustom user=snip:snippets/user-data.yaml
+qm set 8200 --cicustom "network=snip:snippets/network-data.yaml,qm set 8200 --cicustom user=snip:snippets/user-data.yaml"
+
+qm cloudinit update 8200
+
+qm clone 8200 210 --full true --storage data4tb
+
 ```
 
 # Parting thoughts

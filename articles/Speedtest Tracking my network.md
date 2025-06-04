@@ -51,7 +51,7 @@ The admin name, email, password are used to set the initial login user.  I used 
 
 I will update the APP_KEY value with the one I created in the first step.
 
-I will also create the volumes in `~/SpeedTest/data`.
+I will also create a Docker volume in `~/SpeedTest/data`.
 
 In Portainer, I added the yaml above and started the container.
 
