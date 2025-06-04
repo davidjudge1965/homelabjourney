@@ -8,9 +8,9 @@ I didn't fancy building 4 VMs for my k8s cluster by manually installing the O/S 
 
 Deploying templates to VMs using [CloudInit](https://cloud-init.io/) starts with the creation of the VM template.  While this can be done via the Proxmox UI, I chose to use the command-line as much as possible.
 
-To create the template, there are a number of internet resources you can follow.  I based myself on Techno Tim's [Perfect Proxmox Template with Cloud Image and Cloud Init video](https://www.youtube.com/watch?v=shiIi38cJe4) though there are a number of very similar videos and blogs.  While the video is around 3 years old, I found it a good base.  Note that Tim also publishes a companion [blog](https://technotim.live/posts/cloud-init-cloud-image/) with the details of the commands etc.  However, I find that these resources don't provide enough context or explanations for the commands they use.  As part of my intention in these articles is to educate/explain, thgis article is somewhat longer and more wordy than the other resources you may read.
+To create the template, there are a number of internet resources you can follow.  I based myself on Techno Tim's [Perfect Proxmox Template with Cloud Image and Cloud Init video](https://www.youtube.com/watch?v=shiIi38cJe4) though there are a number of very similar videos and blogs.  While the video is around 3 years old, I found it a good base.  Note that Tim also publishes a companion [blog](https://technotim.live/posts/cloud-init-cloud-image/) with the details of the commands etc.  However, I find that these resources don't provide enough context or explanations for the commands they use.  As part of my intention in these articles is to educate/explain, this article is somewhat longer and more wordy than the other resources you may read.
 
-At the end of this article, I have compiled some resources that have beenuseful to me and may be to you.
+At the end of this article, I have compiled some resources that have been useful to me and may be to you.
 
 All the commands below were run as the root user on Proxmox (or "pve" for Proxmox Virtual Environment).
 
@@ -18,7 +18,7 @@ All the commands below were run as the root user on Proxmox (or "pve" for Proxmo
 1. Download the cloud image
 2. Create the new Virtual machine
 3. Import then attach the downloaded CloudInit image to the VM
-4. Add a Cloudinit drive to the VM and make it bootable
+4. Add a CloudInit drive to the VM and make it bootable
 5. Add a serial console to the VM
 6. Convert the VM to a template
 7. Configure CloudInit (the parameters, that is) 
@@ -34,7 +34,7 @@ You will need to download the image that suits you needs.  For me that was:
 https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img.
 Once you've found the image you want in the repository of cloud images, right-click the file and select 'Copy link address' so that you can paste it into your download command.
 
-To perform the download, use the following command (replacing the URL with your choice of CloudInit image, the one you 'copied' in the previous paragraph) while logged into your proxmox server as root.  The file will be downloaded in the current directory. You may wish to download it to `/var/lib/vz/template/iso` (the iso directory of the 'local' storage in Proxmox).  In a later step the downloaded image will be imported into the storage of your choice alongside the VM definition.
+To perform the download, use the following command (replacing the URL with your choice of CloudInit image, the one you 'copied' in the previous paragraph) while logged into your Proxmox server as root.  The file will be downloaded in the current directory. You may wish to download it to `/var/lib/vz/template/iso` (the iso directory of the 'local' storage in Proxmox).  In a later step the downloaded image will be imported into the storage of your choice alongside the VM definition.
 
 ```bash
 wget https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
@@ -51,13 +51,13 @@ qm create 8200 --memory 4096 --core 4 --name ubuntu-cloud --net0 virtio,bridge=v
 This creates a VM with ID 8200, sets the core count to 4, gives it the name "ubuntu-cloud" and sets the first network interface to use the virtio driver and the `vmbr0` 'bridge'.
 
 ### Import then attach the downloaded CloudInit image to the VM
-For it to be used by the VM, the cloudinit image must be imported to the VM and placed in a proxmox storage.  Think of this as converting the downloaded 'img' file into a qcow2 file, Proxmox's prefered format.  On my server, that storage that will hold the resulting qcow2 file is called "data4tb".  
+For it to be used by the VM, the cloudinit image must be imported to the VM and placed in a proxmox storage.  Think of this as converting the downloaded 'img' file into a qcow2 file, Proxmox's preferred format.  On my server, that storage that will hold the resulting qcow2 file is called "data4tb".  
 
 The  commands are below - The bolded text needs to be adapted for your environment.
 
 "noble-server-cloudimg-amd64.img" is the file name from the wget command which will be imported into the Proxmox VM as 'vm-8200-disk-0'... It's disk number 0 of VM id 8200.
 
-The cloudinit disk images are just big enough.  This means that once it's up and running you won't have enough disk space to store very much.  In my testing it failes to install more than 2 ro 3 packages before the VM ran out of space.  To alleviate this issue, the commands in clude growing the disk.  Doing it at this stage has the benefit that at first start, the filesystem will expand to fill the disk.  The command tells pve to grow the disk so if it was 3Gbytes to start with the command below will give you a disk of 53Gb.
+The cloudinit disk images are just big enough.  This means that once it's up and running you won't have enough disk space to store very much.  In my testing I failed to install more than 2 or 3 packages as the VM ran out of space.  To alleviate this issue, the commands include growing the disk.  Doing it at this stage has the benefit that at first start, the filesystem will expand to fill the disk.  The 'resize' command tells pve to grow the disk so if it was 3Gbytes to start with the command below will give you a disk of 53Gb.
 
 The last command sets the boot order to contain just one disk, the one attached to scsi0.
 
@@ -69,7 +69,7 @@ qm create --boot order=scsi0
 </pre>
 
 ### Add a Cloudinit 'drive' to the VM
-The cloudinit drive (usually an ISO file or simiar) contains the parameters for the cloudinit operation that will take place when the VM boots.
+The cloudinit drive (usually an ISO file - pve will (re-)generate it for you) contains the parameters for the cloudinit operation that will take place when the VM boots.
 The parameters/values can be set in the Proxmox GUI and this is done later in this process:
 ![Alt](/articles/assets/VM_Cloudinit_parameters.png)
 
@@ -83,9 +83,9 @@ qm set 8200 --ide2 <b>data4tb</b>:cloudinit
 ### Add a serial console to the VM and enable Guest Agent
 This step is needed to enable you to view boot output, etc. via Proxmox's Console function (VNC - a virtual remote/screen).
 
-If you you don't plan on adding some SSH keys, this step is vital.  Without it, in the absence of SSH keys, you won't be able to log in.
+If you you don't plan on adding some SSH keys, this step is vital.  Without it, in the absence of SSH keys, you won't be able to log in even from the pve console.
 
-By default, pve does not try to talk to the guset agent on VMs.  I recommend switching that on as it gives visibility in the GUI to the VM's networking which is very useful when the network was set up for DHCP.
+By default, pve does not try to talk to the guest agent on VMs.  I recommend switching that on as it gives visibility in the GUI to the VM's networking which is very useful, especially when the network was set up for DHCP.
 
 <pre>
 qm set 8200 --serial0 socket --vga serial0
@@ -129,7 +129,7 @@ users:
   - default
 package_upgrade: true
 ```
-The user-data configuration can be used for much more - later in this article you will see how I configured it to install the package `qemu-guest-agent` and start it.
+The user-data configuration can be used for much more - later in this article you will see how I configured it to install the package `qemu-guest-agent` and start it - see the 'packages:' and 'runcmd:' sections of the user configuration a little further down.
 
 #### Creating a snippets directory
 The cloudinit configuration yaml files must be stored in a location that can be reached when the VM is starting - i.e. in a storage location.  To be able to create a snippet, you will first need to add a "snippet" storage if you haven't got one. To do this, in the Proxmox GUI, select your storage view and add a 'directory' storage:
@@ -238,6 +238,8 @@ Here we clone the template to a new VM with ID 210 (which must be an available I
 ```bash
 qm clone 8200 210 --full true --storage data4tb
 ```
+
+All that's left to do is start the VM
 
 # Parting thoughts
 The process of creating the VMs for my k3s cluster can now start.  My next step will be to write a script to take the "base" cloudinit data files and copy them to <hostname>-user-data.yaml and <hostname>-network-data.yaml and to customise them with data secific to the new vm such as hostname, fqdn and IP address.

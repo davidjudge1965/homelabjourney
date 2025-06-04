@@ -15,7 +15,7 @@ Underlying this effort are:
 
 
 ## A bit about me
-I've been working in IT for all my professional life and for some time before that as a student - my first coding job was at age 14.
+I've been working in IT for all my professional life and for some time before that as a student - my first job (coding) was at age 14.
 
 Since the early 1980's, I have been employed as:
 - Support engineer / Escalations Manager
@@ -31,7 +31,7 @@ Key steps/processes in setting-up my homelab, though these may not be accomplish
 - Install hardware and operating systems (not documented)
 - Build the basics of VM creation through the CLI, ready for a future automation or orchestration
 - Set up Kubernetes (not documented - there's already enough on the internet explaining this)
-- Set up monitoring of k3s, proxmox, etc. anlong with some dashboarding
+- Set up monitoring of k3s, proxmox, etc. along with some dashboarding
 - Set up a front page to make access to the various applications easy
 - etc.
 
