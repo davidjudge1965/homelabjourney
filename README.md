@@ -1,5 +1,5 @@
 # Home Lab Journey
-This repo holds my notes, instructions and explanations or thoughts around my journey into home labbing.
+This repo holds my notes, instructions and explanations or thoughts around my journey into homelabbing.
 
 I've been homelabbing for many years now, but as I embark on new explorations I wanted to document the journey.
 
@@ -23,7 +23,7 @@ Since the early 1980's, I have been employed as:
 - Consultant (in Business Rules)
 - Presales in AIOps, Observability, NetOps, Automation, etc.
 
-If you want to find out more about my career, check out [my linkedin page](https://www.linkedin.com/in/davidjudge) or my CV which [can be downloaded from here](https://resume.davidmjudge.me.uk).
+If you want to find out more about my career, check out [my LinkedIn page](https://www.linkedin.com/in/davidjudge) or my CV which [can be downloaded from here](https://resume.davidmjudge.me.uk).
 
 
 ## Setting up the homelab
