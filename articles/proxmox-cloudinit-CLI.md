@@ -337,3 +337,7 @@ And if you've made it this far, many thanks for your perseverance.  If you've fo
 [Proxmox Cheatsheet by Software Engineering World](https://sweworld.net/cheatsheets/proxmox/)
 
 [Top 10 Proxmox CLI commands - Naviko](https://www.nakivo.com/blog/top-10-proxmox-cli-commands/)
+
+[All cloud config examples](https://cloudinit.readthedocs.io/en/latest/reference/examples.html)
+
+[CloudInit Reference with details of many modules one can use](https://cloudinit.readthedocs.io/en/latest/reference/modules.html)

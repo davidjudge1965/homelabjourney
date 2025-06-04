@@ -16,11 +16,11 @@ echo -n 'base64:'; openssl rand -base64 32;
 For ease of retrieval, I have saved that key in a file called APP_KEY.
 
 ### Setting up a database
-Speed Tracker will need somewhere to store its data.  There are four choices: SQLite, MariaDB, MySQL and Postgres.  For this experiment I will use SQLIte.
+Speed Tracker will need somewhere to store its data.  There are four choices: SQLite, MariaDB, MySQL and Postgres.  For this experiment I will use SQLite.
 
-I used portainer (already deployed on my 'dock' VM).
+I used portainer (already deployed on my 'dock' VM) to deploy the container.
 
-I copied the configuration that I will need from the [documentation page for Docker Compose](https://docs.speedtest-tracker.dev/getting-started/installation/using-docker-compose):
+I copied into Portainer the configuration that I will need from SpeedtestTracker's  [documentation page for Docker Compose](https://docs.speedtest-tracker.dev/getting-started/installation/using-docker-compose):
 ```yaml
 services:
     speedtest-tracker:
@@ -39,6 +39,15 @@ services:
             - /path/to/data:/config
             - /path/to-custom-ssl-keys:/config/keys
 ```
+
+Then I enhanced the environment variables to suit my needs.  The environment variables are documented [here](https://docs.speedtest-tracker.dev/getting-started/environment-variables).
+
+Beyond those already present in the yaml file, the key variables we need to set are: ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD.
+
+The admin name, email, password are used to set the initial login user.  I used the following values:
+- ADMIN_NAME=David
+- ADMIN_EMAIL=david.judge@computer.org
+- ADMIN_PASSSWORD=DJAdminPassword
 
 I will update the APP_KEY value with the one I created in the first step.
 
