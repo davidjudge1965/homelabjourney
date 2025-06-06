@@ -131,8 +131,16 @@ package_upgrade: true
 ```
 The user-data configuration can be used for much more - later in this article you will see how I configured it to install the package `qemu-guest-agent` and start it - see the 'packages:' and 'runcmd:' sections of the user configuration a little further down.
 
+### Configuring cloudinit custom configuration files
+
+Cloudinit allows you to use configuration files that are read by cloudinit at startup.  While there are 4 different areas or sections in cloudinit (user, network and meta, vendor), I will only need to customise 2 of them: user and network.
+
+You can then use the yaml files for user and network to configure these aspect of cloudinit.
+
+These configuration files must reside on a PVE filesystem configured to contain snippets.  The next few paragraphs cover the creation of a directory in the pve GUI to hold the snippets.
+
 #### Creating a snippets directory
-The cloudinit configuration yaml files must be stored in a location that can be reached when the VM is starting - i.e. in a storage location.  To be able to create a snippet, you will first need to add a "snippet" storage if you haven't got one. To do this, in the Proxmox GUI, select your storage view and add a 'directory' storage:
+The cloudinit configuration yaml files must be stored in a location that can be reached when the VM is starting - i.e. in a pve storage location.  To be able to create a snippet, you will first need to add a "snippet" storage if you haven't got one. To do this, in the Proxmox GUI, select your storage view and add a 'directory' storage:
 ![Alt](/articles/assets/Creating_Snippets_Directory.png)
 
 I created a storage called "snip" and gave it a the following location in the pve's filesystem: `/snipfiles`.  When the snippet location is created it creates a "snippets subfolder in "/snipfiles:
@@ -148,7 +156,7 @@ Thus "/snipfiles/snippets" will be the folder in the pve's filesystem where I wi
 
 Proxmox does not seem to like subdirectories in the snippets.  You must create the configuration files in the snippets directory (i.e. `/snipfiles/snippets`).
 
-### Creating the configurations file "snippets"
+#### Creating the configurations file "snippets"
 
 While there are 4 different areas or sections in cloudinit (user, network and meta, vendor), I will only need to customise 2 of them: user and network.
 
