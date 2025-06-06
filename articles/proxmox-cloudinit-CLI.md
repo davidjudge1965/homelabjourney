@@ -202,7 +202,7 @@ config:
       address:
       - '192.168.178.1'
       search:
-      - 'lab.davidmjudge.me.uk
+      - 'lab.davidmjudge.me.uk'
 EOF
 ```
 
