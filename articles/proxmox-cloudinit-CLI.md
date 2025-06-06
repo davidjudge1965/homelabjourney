@@ -139,6 +139,8 @@ You can then use the yaml files for user and network to configure these aspect o
 
 These configuration files must reside on a PVE filesystem configured to contain snippets.  The next few paragraphs cover the creation of a directory in the pve GUI to hold the snippets.
 
+One thing to note is that once you are using cicustom files, changes via the GUI to the cloudinit configuration will have no effect ad the contents of the configurations will take precendence.
+
 #### Creating a snippets directory
 The cloudinit configuration yaml files must be stored in a location that can be reached when the VM is starting - i.e. in a pve storage location.  To be able to create a snippet, you will first need to add a "snippet" storage if you haven't got one. To do this, in the Proxmox GUI, select your storage view and add a 'directory' storage:
 ![Alt](/articles/assets/Creating_Snippets_Directory.png)
@@ -154,7 +156,7 @@ snipfiles/
 
 Thus "/snipfiles/snippets" will be the folder in the pve's filesystem where I will place snippets on my pve server.   
 
-Proxmox does not seem to like subdirectories in the snippets.  You must create the configuration files in the snippets directory (i.e. `/snipfiles/snippets`).
+Proxmox (or cloudinit) does not seem to like subdirectories in the snippets.  You must create the configuration files in the snippets directory (i.e. `/snipfiles/snippets`).
 
 #### Creating the configurations file "snippets"
 
@@ -254,7 +256,7 @@ The process of creating the VMs for my k3s cluster can now start.  My next step 
 
 I think I will porbably write an article about that as I suspect not everyone knows the techniques that can be used to make this easy.  Watch this space.
 
-And if you've made it this far, many thanks for your perseverance.  If you've found this useful, please let me know - either comment where you found the link (probably a LinkedIn post or maybe my github), and maybe a like if you think the article is worthy of one.
+And if you've made it this far, many thanks for your perseverance.  If you've found this useful, please let me know - either comment where you found the link (probably a LinkedIn post, or maybe my github), and maybe a like if you think the article is worthy of one.
 
 # Useful resources
 
